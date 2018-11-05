@@ -1,0 +1,34 @@
+install.packages("rpart")
+install.packages("rpart.plot")
+
+require(rpart)
+require(rpart.plot)
+
+dados <- Base_Select
+
+data()
+require(ggplot2)
+
+
+m1 <- rpart(Sum_NºPNEUS ~., data = dados ,minsplit = 100, minbucket = 50,
+            xval = 10, maxdepth = 10, cp = 0, usesurrogate = 0, surrogatestyle = 0)
+
+m1
+
+rpart.plot(m1, type = 3, digits = 3, fallen.leaves = TRUE)
+
+
+rpart.plot(fit, # middle graph
+           type=0,
+           extra=101, 
+           box.palette="GnBu",
+           branch.lty=3, 
+           shadow.col="gray", 
+           nn= TRUE,
+           cex = 0.8
+)
+
+p1 <- predict(m1,dados)
+
+
+

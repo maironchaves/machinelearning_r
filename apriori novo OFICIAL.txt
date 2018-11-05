@@ -1,0 +1,6 @@
+library(arules)
+Cesta_Grupo <- read.transactions(file.choose(),format="basket",sep="|")
+rules <- apriori(Cesta_Grupo, parameter= list(supp=0.01, conf=0.1,maxlen=4)) 
+setwd("C:\\Users\\Consultor\\Desktop\\Cestas")
+regras = as(rules,"data.frame")
+write.table(regras,file = "Cesta_Grupo.csv",sep=";")

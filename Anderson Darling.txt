@@ -1,0 +1,10 @@
+install.packages("nortest")
+library(nortest)
+ad.test(regressao$residuals)
+
+
+
+Teste de Normalidade dos Erros
+
+H0: os erros do modelo são Normais
+H1: os erros do modelo não são Normais

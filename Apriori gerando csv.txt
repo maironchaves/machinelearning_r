@@ -1,0 +1,56 @@
+#Install needed packages
+install.packages("arules")
+install.packages("arulesViz")
+install.packages("igraph")
+
+#Load needed libraries 
+library(arules)
+library(arulesViz)
+library(datasets)
+library(igraph)
+
+#options(digits=2)
+
+#Change R directory to the files folder 
+setwd("C:\\Projetos Alterix\\Nissei\\Nissei_NovaEntrega")
+
+#Obsolete, don't use it.
+#Read cluster data
+#data <- read.csv("Cluster1.csv")
+
+#Obsolete, don't use it.
+#Transform basket_no to factor to showed as string
+#data$basket_no <- as.factor(data$basket_no)
+
+#Obsolete, don't use it.
+#Get unique data from dataset, it is required to analysis.
+#data <- unique(data)
+
+#Obsolete, don't use it.
+#Transform dataset to transactions data type
+#cluster <- as(split(data[,"CLS_ID_DS"], data[,"basket_no"]), "transactions")
+
+#The dataframe can be in either a normalized (single) form or a flat file (basket) form.
+#When the file is in basket form it means that each record represents a transaction where the items in the basket are represented by columns.
+#When the dataset is in single form it means that each record represents one single item and each item contains a transaction id.
+cluster <- read.transactions("Base para Analise_Fralda.txt", format = "single", sep = ";", cols = c("lojacupom", "produto"), rm.duplicates = "true")
+
+#Get the association rules with support = 0.01% and confidence = 1%
+rules <- apriori(cluster, parameter = list(supp = 0.01, conf = 0.01))
+
+#Sort rules by confidence
+rules <- sort(rules, decreasing=TRUE,by="confidence")
+
+#Show rules
+inspect(rules)
+
+#Transform data from transaction data type to data.frame
+df <- as(rules, "data.frame")
+
+#Create csv file with the association rules.
+write.table(df, file = "Analise_geral_abril.csv", sep=";", row.names=FALSE)
+
+#Create imagem from graph rules
+png(filename = "cluster15.png" )
+plot(rules,method="graph",interactive=FALSE)
+dev.off()

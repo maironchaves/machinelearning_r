@@ -1,0 +1,44 @@
+#Instala a biblioteca arules
+install.packages("arules")
+
+#Carrega a biblioteca para cesta de compras
+library(arules)
+
+matriz_exportar <- NULL
+matriz_exportar_2 <- NULL
+#dados recebe o arquivo em formato basket (todos os produtos de um mesmo cupom separados por |)
+dados = read.transactions(file.choose(), format = "basket", sep = "|")
+dados2 = read.delim("C:/Users/diegonascimento/Desktop/Rollout/Verdemar/Analise_cesta_grupo.csv")
+dados_unicos =read.csv(file.choose(), sep = ",")
+head(dados)
+
+#Gera o gráfico de frequência dos itens mais comprados
+itemFrequencyPlot(dados,topN=10, type ="absolute")
+
+
+
+for (i in 1:nrow(dados_unicos))
+
+{
+  filtrar <- dados_unicos[i,1]
+
+  if(filtrar %in% dados2$Concat_grupo_gmr)
+  {
+  #regras recebe todas as associações de acordo com o suporte e confiança
+  regras=apriori(dados,parameter=list(minlen =2,supp=0.001,conf=0.1), appearance = list(default="rhs", lhs = filtrar ))
+  tabela = as(regras, "data.frame")
+  matriz_exportar_2 <- rbind(matriz_exportar_2,tabela)
+  }
+  
+}  
+
+
+
+tabela_nova = data.frame(tabela$rules,tabela$support,tabela$confidence,round(tabela$lift,2),tabela$count)
+write.table(matriz_exportar_2,'base_lhs.csv', sep = ";", dec = ",")
+
+#Informa o diretorio onde o arquivo foi salvo
+getwd()
+
+
+

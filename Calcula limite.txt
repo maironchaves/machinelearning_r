@@ -1,0 +1,16 @@
+LS = quantile(exportar$interacoes.residuals,0.75)+IQR(exportar$interacoes.residuals)
+LI = quantile(exportar$interacoes.residuals,0.25)-IQR(exportar$interacoes.residuals)
+limite_residuos = NULL
+k = NULL
+for (k in 1:length(exportar$interacoes.residuals)){
+  
+  if (exportar$interacoes.residuals[k] >= LI & exportar$interacoes.residuals[k] <= LS)
+   { limite = exportar$indice[k]  }
+ else 
+ {  limite = " "}
+
+  limite_residuos = rbind(limite_residuos,limite)
+  
+  k = k + 1
+  
+}

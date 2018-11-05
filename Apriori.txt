@@ -1,0 +1,25 @@
+#site legal explicando http://www.datascientist.com.br/2013/05/regras-de-associacao-com-apriori.html
+
+#caso não tenha o arules instalado
+#install.packages("arules") 
+
+
+#carrega biblioteca
+library(arules) 
+
+
+#lê o arquivo
+tr=read.transactions("C:/Users/máiron/Desktop/Excluir.txt",format="basket",sep = ",") 
+#produtos em uma célula separados  tr <-read.transactions(file.choose(),format="basket",sep=",")
+#primeira coluna é o id e a segunda o produto  tr <- read.transactions("demo_single", format = "single", cols = c(1,2))
+
+
+#duas maneiras de visualizar os dados
+inspect(tr)
+head(tr)
+
+#define suporte e confiança
+rules=apriori(tr,parameter=list(supp=0.5,conf=0.5))
+
+#Exibe padrões localizados
+inspect(rules)

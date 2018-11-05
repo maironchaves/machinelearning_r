@@ -1,0 +1,99 @@
+library("lmtest")
+bptest(formula, varformula = NULL, studentize = TRUE, data = list())
+
+
+Teste de Homogeneidade de Variâncias
+H0: os erros do modelo são homocedásticos nos níveis da variável explicativa
+H1: os erros do modelo são heterocedásticos nos níveis da variável explicativa
+
+
+
+#Teste de Breusch Pagan, consiste em regredir as variáveis explicativas
+#contra os resíduos ao quadrado. Se o teste F da anova for significativo o
+#modelo é heterocedástico
+
+fit <- lm(base_cerveja$qtde_vendida ~
+            base_cerveja$preco_praticado,data = base_cerveja)
+
+
+teste <- lm(residuos ~ preco)
+
+anova(teste)
+
+bptest(fit)
+residuos2 <- fit$residuals^2
+
+#Teste de White, regredir os valores preditos e preditos ao quadrado 
+#contra os resíduos ao quadrado, se teste F da anova for significativo
+#o modelo é heterocedástico
+
+
+
+
+
+
+
+
+
+
+
+
+
+bptest {lmtest}	R Documentation
+Breusch-Pagan Test
+
+Description
+
+Performs the Breusch-Pagan test against heteroskedasticity.
+
+Usage
+
+bptest(formula, varformula = NULL, studentize = TRUE, data = list())
+Arguments
+
+formula	a symbolic description for the model to be tested (or a fitted "lm" object).
+varformula	a formula describing only the potential explanatory variables for the variance (no dependent variable needed). By default the same explanatory variables are taken as in the main regression model.
+studentize	logical. If set to TRUE Koenker's studentized version of the test statistic will be used.
+data	an optional data frame containing the variables in the model. By default the variables are taken from the environment which bptest is called from.
+Details
+
+The Breusch-Pagan test fits a linear regression model to the residuals of a linear regression model (by default the same explanatory variables are taken as in the main regression model) and rejects if too much of the variance is explained by the additional explanatory variables.
+
+Under H_0 the test statistic of the Breusch-Pagan test follows a chi-squared distribution with parameter (the number of regressors without the constant in the model) degrees of freedom.
+
+Examples can not only be found on this page, but also on the help pages of the data sets bondyield, currencysubstitution, growthofmoney, moneydemand, unemployment, wages.
+
+Value
+
+A list with class "htest" containing the following components:
+
+statistic	the value of the test statistic.
+p.value	the p-value of the test.
+parameter	degrees of freedom.
+method	a character string indicating what type of test was performed.
+data.name	a character string giving the name(s) of the data.
+References
+
+T.S. Breusch & A.R. Pagan (1979), A Simple Test for Heteroscedasticity and Random Coefficient Variation. Econometrica 47, 1287–1294
+
+R. Koenker (1981), A Note on Studentizing a Test for Heteroscedasticity. Journal of Econometrics 17, 107–112.
+
+W. Kr?mer & H. Sonnberger (1986), The Linear Regression Model under Test. Heidelberg: Physica
+
+See Also
+
+lm, ncv.test
+
+Examples
+
+## generate a regressor
+x <- rep(c(-1,1), 50)
+## generate heteroskedastic and homoskedastic disturbances
+err1 <- rnorm(100, sd=rep(c(1,2), 50))
+err2 <- rnorm(100)
+## generate a linear relationship
+y1 <- 1 + x + err1
+y2 <- 1 + x + err2
+## perform Breusch-Pagan test
+bptest(y1 ~ x)
+bptest(y2 ~ x)

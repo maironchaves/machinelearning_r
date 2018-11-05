@@ -1,0 +1,57 @@
+data("iris")
+str(iris)
+
+library(psych)
+
+pairs.panels(iris[1:4],
+gap = 0,
+bg = c("red","green","blue")[iris$Species],
+pch = 21)
+
+#Separa parte da base pra treino
+set.seed(555)
+
+#60% para treino e 40% para teste
+ind<-sample(2,size=nrow(iris), replace=TRUE, prob=c(.60,.40))
+
+treino <- iris[ind==1,]
+teste <- iris[ind==2,]
+
+#Discriminante Linear de Fisher
+library(MASS)
+
+linear <- lda(Species ~ ., data = treino)
+
+attributes(linear)
+
+#Predição e histograma
+p <- predict(linear,treino)
+
+ldahist(data = p$x[,1], g = treino$Species)
+ldahist(data = p$x[,2], g = treino$Species)
+
+# Bi-Plot
+install.packages("devtools", dependencies = TRUE)
+install_github("fawda123/ggord")
+
+library(devtools)
+library(ggord)
+
+#Funciona apenas para mais de duas classes
+ggord(linear,treino$Species, ylim = c(-10,10))
+
+#Matriz de confusão
+p1 <- predict(linear,treino)$class
+confusao <- table(Predicted = p1, Actual = treino$Species)
+confusao
+
+#Acurácia
+sum(diag(confusao))/sum(confusao)
+
+
+#Utilizando a predição já realizada na base separada pra teste de modelo
+p2 <- predict(linear,teste)$class
+confusao2 <- table(Predicted = p2, Actual = teste$Species)
+confusao2
+
+sum(diag(confusao2))/sum(confusao2)

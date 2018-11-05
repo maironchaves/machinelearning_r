@@ -1,0 +1,75 @@
+## Carregando os pacotes necessários
+library(arules)
+library(arulesViz)
+
+## Carregando conjunto de dados
+## Inspecionando
+groceries <- read.transactions(file.choose(),format="basket",sep="|",rm.duplicates = T)
+
+## Sumário
+summary(groceries)
+
+## Observando algumas transações
+inspect(groceries[1:4]) ## linhas da matiz são cestas de compras
+
+## Colunas da matriz são itens
+itemFrequency(groceries[,1:10]) ## vendo os números
+itemFrequencyPlot(groceries[,1:10]) ## gráfico de barras
+
+## É possível colocar no gráfico somente itens com um certo suporte
+itemFrequencyPlot(groceries, support = 0.1)
+
+## É possível fazer seus próprios gráficos
+itens <- itemFrequency(groceries)
+itens <- itens[order(itens, decreasing = T)]
+dotchart(itens) #visualiza no eixo x o suporte/frequencia dos itens
+
+## o mesmo gráfico com menos itens
+dotchart(itens[1:10], cex = 0.8)
+itemFrequencyPlot(groceries, topn=10) #gráfico com o topN mais comprados
+
+## Encontrando as regras de associação com o algoritmo Apriori
+regras <- apriori(groceries, parameter = list(support = 0.1, confidence = 0.10))
+
+## Inspecionando regras
+summary(regras)
+
+# Vendo as regras
+inspect(regras[1:3])
+inspect(regras)
+inspect(sort(regras, by = 'confidence'))
+
+# Visualizando as regras com um grafo
+plot(regras, method = 'scatterplot', interactive = TRUE, shading = NA)
+plot(regras, method = 'two-key plot', interactive = TRUE, shading=NA)
+
+## Fazendo um gráfico do lift pelo suporte
+plot(regras, measure=c("support","lift"), shading = "confidence")
+
+# Obtendo um conjunto menor de regras
+subregras <- regras[quality(regras)$confidence > 0.8]
+
+# Fazendo gráfico de matrizes
+plot(subregras,method = 'matrix', interactive = TRUE, shading = NA)
+plot(subregras,method = 'matrix3D', interactive = TRUE, shading = NA)
+
+## Plotando regras agrupadas
+plot(regras, method="grouped",control = list(k-50),cex = 0.8)
+
+#EXPORTAR PARA CSV
+#Change R directory to the files folder 
+setwd("C:\\Users\\mairon.stefanini\\Desktop\\Pilotos\\Vídeos\\Cesta")
+
+#Transform data from transaction data type to data.frame
+df <- as(rules, "data.frame")
+
+#Create csv file with the association rules.
+write.table(df, file = "Analise_pao.csv", sep=";", row.names=FALSE,dec = ",")
+
+## Plotando regras como grafos
+subregras2 <- head(sort(regras, by="lift"),10)
+pdf(file = 'grafos.pdf')
+plot(subregras2,method = "graph",control = list(type="itemsets"))
+dev.off()
+
+             

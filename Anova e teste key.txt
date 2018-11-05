@@ -1,0 +1,23 @@
+#HO: Não há variação significativa entre grupos
+#H1: Há variação significativa entre grupos
+
+#Regressão simples entre uma variável categórica vs resposta
+regressao = lm(dados$Valor ~ dados$Tipo, data = dados)
+anova(regressao)
+
+#Graus de liberdade da variável: total de grupos - 1
+#Graus de liberdade dos resíduos: n de obs - n de grupos
+
+#Se p valor do test F for significativo, as variâncias são
+# estatísticamente diferentes
+
+#Anova de um fator
+a = aov(dados$Valor ~ dados$Tipo, data = dados)
+anova(a)
+#anova de dois fatores aov(y ~ x1 * x2, data = dados)
+t =  TukeyHSD(a)
+
+#No p valor do teste tukey, se abaixo de alfa as médias
+# das categorias são estatísticamente diferentes
+
+#Ao considerarmos um nível de significância de 5%, não rejeitamos a hipótese de igualdade entre as médias dos níveis

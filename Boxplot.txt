@@ -1,0 +1,11 @@
+> boxplot(Faturamento_Medio_Anual~Filial,data=dados)
+
+
+a <- runif(10,1,100)
+b <-c("A","A","A","A","A","B","B","B","B","B")
+t <- cbind(a,b)     
+
+bp<- boxplot(a~b)
+
+text(x = 1, y = bp$stats[,1] + 2, labels = round(bp$stats[,1], 2))
+text(x = 2, y = bp$stats[,2] + 2, labels = round(bp$stats[,2], 2))

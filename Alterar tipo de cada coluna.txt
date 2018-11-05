@@ -1,0 +1,5 @@
+for (cn in names(dados)[sapply(dados,is.character)])
+{
+  dados[[cn]] <- as.factor(dados[[cn]])
+}
+str(dados)

@@ -1,0 +1,49 @@
+library(readxl)
+Export_R <- read_excel("C:/Users/maironchaves/OneDrive - falconi365/Analytics - Máiron/Stone/Export_R2.xlsx", 
+                       sheet = "Dados_Codificados")
+Ansiedade <- read_excel("C:/Users/maironchaves/Desktop/Ansiedade.xlsx", 
+                        sheet = "Plan1")
+
+library(dplyr)
+
+
+dados <- Ansiedade
+dados=dados %>% mutate_if(is.character, as.factor)
+dados=dados %>% mutate_if(is.numeric, as.factor)
+options(scipen =999, digits =6)
+
+
+exportar <- NULL
+i = 1
+for ( i in 1:ncol(dados)) {
+
+  explicativa <- dados[,i]
+  resposta <- dados$Nivel_Incomodo_do_Zumbido
+  aux <- data.frame(explicativa,resposta)
+  aux<- na.omit(aux)
+
+  
+  
+  colnames(aux)<- c(names(dados)[i],"Classificacao")  
+  
+  tab <- table(aux[,2],aux[,1])
+  
+  teste <- chisq.test(tab)
+   
+  resultado <- data.frame(names(dados)[i],
+                          round(teste$p.value,4),
+                            nrow(aux))
+  
+  exportar <-  rbind(exportar,resultado)
+  
+
+  
+}
+
+colnames(exportar) <- c("Variavel","P.Valor","n")
+exportar
+
+write.table(exportar,"qui_quadrado_testes.csv",row.names = F,
+             sep = ";", dec = ",")
+
+getwd()

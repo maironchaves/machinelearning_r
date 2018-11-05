@@ -1,0 +1,43 @@
+
+resultado<- NULL
+tabela <- NULL
+
+for (i in 1:length(dados))
+{
+  #Inicia kmeans com sementes iniciais igual ao numerico do contador i
+  particoes <- kmeans(dados,i,nstart = i)
+  
+  #Armazena soma das distancias dentro dos clusters para i-esima passagem
+  dentro_within  <-  particoes$tot.withinss
+  #Armazena a soma das distancias entre os clusters para a i-esima passagem 
+  entre <-  particoes$betweenss
+  
+  g <- i
+  
+  # Calcula estatistica de teste pseudo F
+  # Onde entre é a variação geral entre os clusters, 
+  # dentro_within é a variação geral dentro do cluster
+  # nrow é o número de observações e g o número de clusters
+  f<- (entre/dentro_within)*(nrow(dados)-g)/(g-1)
+  
+  #Resultado da divisao da soma das distancias entre clusters 
+  #por distancias totais  
+  r2 <- entre/particoes$totss
+  
+  tabela <- cbind(dentro_within, entre, g,f,r2)
+  
+  resultado <- rbind(resultado,tabela)
+  
+  tabela <- NULL
+  dentro_within <- NULL
+  total <- NULL
+  
+  
+} 
+
+par(mfrow = c(1,3))
+plot(resultado[,4],type="b",col="black",lty=2,lwd=2, main = "Calinski Harabasz")
+plot(resultado[,5],type="b",col="black",lty=2,lwd=2, main = "R2")
+plot(resultado[,1],type="b",col="black",lty=2,lwd=2, main = "SSE")
+dev.off()
+
